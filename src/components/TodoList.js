@@ -3,21 +3,29 @@ import { Routes, Route, Link } from 'react-router-dom'
 import axios from 'axios';
 import styled from 'styled-components';
 import '../App'
+import { render } from '@testing-library/react';
 
 const TodoCard = styled.div`
-  width: 300px;
+  width: 500px;
   height: 100px;
-  margin: 0 auto;
+  margin: 10px auto;
+  border: 1px solid #333;
+  box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+`
+
+const TodoAbout = styled.p`
+  color: #333;
 `
 
 function TodoList() {
 
-  const [todos, setTodos] = useState([])
+  const [genres, setGenres] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/todos')
+    axios.get('http://localhost:3000/api/v1/todos.json')
     .then(resp => {
-        setTodos(resp.data);
+        setGenres(resp.data);
     })
     .catch(e => {
         console.log(e)
@@ -30,13 +38,29 @@ function TodoList() {
       <h1>
         All Todo
       </h1>
-        {todos.map((val, key) => {
-          return(
-              <TodoCard key = {key}>
-                {val.title}
-              </TodoCard>
+        {
+          genres.map((genre, key) =>
+            {
+              console.log(key);
+              console.log(genre);
+              return(
+                <div className = "genrecard">
+                    {
+                      genre.todos.map((todo, num) =>
+                        {
+                          console.log(key + '-' + num)
+                          console.log(todo);
+                          return(
+                            <TodoCard><TodoAbout>{genre.name}</TodoAbout></TodoCard>
+                          );
+                        }
+                      )
+                    }
+                </div>
+              );
+            }
           )
-        })}
+        }
     </>
   );
 }
