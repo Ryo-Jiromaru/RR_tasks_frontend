@@ -10,6 +10,13 @@ import TodoList from './components/TodoList';
 const Main = styled.body`
 `
 
+const HeaderNav = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 300px;
+`
+
 function App() {
 
   // const axiosPost = axios.create({
@@ -22,8 +29,10 @@ function App() {
       <header>
         <div className = "header_logo">
         </div>
-        <div className= 'header_navbar'>
-        </div>
+        <HeaderNav>
+          <a href="/top">トップ</a>
+          <a href="/api/v1/todos">ToDoリスト</a>
+        </HeaderNav>
       </header>
       <Main>
         <Routes>
