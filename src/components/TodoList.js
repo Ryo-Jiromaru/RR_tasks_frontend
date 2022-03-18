@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import axios from 'axios';
 import styled from 'styled-components';
 import '../App'
+import AddTodoModal from './AddTodoModal';
 import { render } from '@testing-library/react';
 
 const TaskBord = styled.section`
@@ -35,7 +36,7 @@ const GenreName = styled.h1`
 const TodoCard = styled.div`
   width: 160px;
   height: 80px;
-  margin: 0 auto;
+  margin: 10px auto;
   border: 1px solid #333;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
   padding: 5px;
@@ -50,19 +51,39 @@ function TodoList() {
 
   const [genres, setGenres] = useState([])
 
+  const [show, setShow] = useState(false)
+
+  const [modaltitle, setModalTitle] = useState([])
+
+  const [modalgenreid, setModalGenreId] = useState([])
+
   useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/todos.json')
-    .then(resp => {
-        setGenres(resp.data);
-    })
-    .catch(e => {
-        console.log(e)
-    })
-  }, [])
+    const getTodo = async () => {
+      const response = await axios.get('http://localhost:3000/api/v1/todos.json');
+      setGenres(response.data)
+    }
+    getTodo();
+
+    //下記でやったら投稿したタスクの表示に更新が必要、上記でやったら非同期で表示可能
+
+    // axios.get('http://localhost:3000/api/v1/todos.json')
+      // .then(resp => {
+      //     console.log(resp.data);
+      //     setGenres(resp.data);
+      // })
+      // .catch(e => {
+      //     console.log(e)
+      // })
+  })
+
+  const openAddTodoModal = (genre) =>{
+    setModalTitle(genre.name);
+    setModalGenreId(genre.id);
+    setShow(true);
+  }
 
   return (
     <>
-
       <h1>
         All Todo
       </h1>
@@ -70,30 +91,43 @@ function TodoList() {
         {
           genres.map((genre, key) =>
             {
-              console.log(key);
-              console.log(genre);
               return(
                 <GenreCard>
                   <GenreName>{genre.name}</GenreName>
                     {
                       genre.todos.map((todo, num) =>
                         {
-                          console.log(key + '-' + num)
-                          console.log(todo);
                           return(
-                            <TodoCard>
-                              <TodoAbout>{todo.about}</TodoAbout>
-                            </TodoCard>
+                            <>
+                              <TodoCard>
+                                <TodoAbout>{todo.about}</TodoAbout>
+                              </TodoCard>
+                              {
+                                // {
+                                //   (()=>{
+                                //   if(show==true){
+                                //     return <AddTodoModal show={show} title={genre.name} id={genre.id}/>;
+                                //   }
+                                //   })
+                                // }
+
+                                // 上か下かのどちらかでいい
+
+                                // show && <AddTodoModal show={show} title={genre.name} id={genre.id}/>
+                              }
+                            </>
                           );
                         }
                       )
                     }
+                     <button onClick={() => openAddTodoModal(genre)}>Click</button>
                 </GenreCard>
               );
             }
           )
         }
       </TaskBord>
+      {show &&<AddTodoModal show={show} title={modaltitle} id={modalgenreid} setShow={setShow}/>}
     </>
   );
 }
