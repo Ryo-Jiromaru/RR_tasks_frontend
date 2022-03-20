@@ -6,130 +6,133 @@ import '../App'
 import AddTodoModal from './AddTodoModal';
 import { render } from '@testing-library/react';
 
-const TaskBord = styled.section`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 90%;
-  min-width: 1200px;
-  height: 800px;
-  margin: 0 auto;
-  background-color: #e6ffeb;
-  border-radius: 10px;
-`
+////スタイリング////
 
-const GenreCard = styled.div`
-  width: 200px;
-  min-height: 100px;
-  background-color: #fff;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #d4d2d2;
-  border-radius: 5px;
-`
+  const TaskBord = styled.section`
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 90%;
+    min-width: 1200px;
+    height: 800px;
+    margin: 0 auto;
+    background-color: #e6ffeb;
+    border-radius: 10px;
+  `
 
-const GenreName = styled.h1`
-  font-size: 20px;
-  font-weight: bold;
-`
+  const GenreCard = styled.div`
+    width: 200px;
+    min-height: 100px;
+    background-color: #fff;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #d4d2d2;
+    border-radius: 5px;
+  `
 
-const TodoCard = styled.div`
-  width: 160px;
-  height: 80px;
-  margin: 10px auto;
-  border: 1px solid #333;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
-  padding: 5px;
-`
+  const GenreName = styled.h1`
+    font-size: 20px;
+    font-weight: bold;
+  `
 
-const TodoAbout = styled.p`
-  color: #333;
-  font-size: 12px;
-`
+  const TodoCard = styled.div`
+    width: 160px;
+    height: 80px;
+    margin: 10px auto;
+    border: 1px solid #333;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    padding: 5px;
+  `
 
-function TodoList() {
+  const TodoAbout = styled.p`
+    color: #333;
+    font-size: 12px;
+  `
 
-  const [genres, setGenres] = useState([])
+////TodoListコンポーネント////
 
-  const [show, setShow] = useState(false)
+  function TodoList() {
 
-  const [modaltitle, setModalTitle] = useState([])
+    ////TodoListでTodoを表示するために、Todoの親となっているGenreを取得する////
+      const [genres, setGenres] = useState([])
+    ////Modal（AddTodoModalコンポーネント）を表示するかしないかのステータス////
+      const [todoshow, setTodoShow] = useState(false)
+    ////Modalに受け渡すためにタイトル（ジャンル名）を保存するstate////
+      const [modaltitle, setModalTitle] = useState([])
+    ////Modalに受け渡すためにGenreとTodoを紐付けるIDを保存するstate////
+      const [modalgenreid, setModalGenreId] = useState([])
 
-  const [modalgenreid, setModalGenreId] = useState([])
-
-  useEffect(() => {
-    const getTodo = async () => {
-      const response = await axios.get('http://localhost:3000/api/v1/todos.json');
-      setGenres(response.data)
-    }
-    getTodo();
-
-    //下記でやったら投稿したタスクの表示に更新が必要、上記でやったら非同期で表示可能
-
-    // axios.get('http://localhost:3000/api/v1/todos.json')
-      // .then(resp => {
-      //     console.log(resp.data);
-      //     setGenres(resp.data);
-      // })
-      // .catch(e => {
-      //     console.log(e)
-      // })
-  })
-
-  const openAddTodoModal = (genre) =>{
-    setModalTitle(genre.name);
-    setModalGenreId(genre.id);
-    setShow(true);
-  }
-
-  return (
-    <>
-      <h1>
-        All Todo
-      </h1>
-      <TaskBord>
-        {
-          genres.map((genre, key) =>
-            {
-              return(
-                <GenreCard>
-                  <GenreName>{genre.name}</GenreName>
-                    {
-                      genre.todos.map((todo, num) =>
-                        {
-                          return(
-                            <>
-                              <TodoCard>
-                                <TodoAbout>{todo.about}</TodoAbout>
-                              </TodoCard>
-                              {
-                                // {
-                                //   (()=>{
-                                //   if(show==true){
-                                //     return <AddTodoModal show={show} title={genre.name} id={genre.id}/>;
-                                //   }
-                                //   })
-                                // }
-
-                                // 上か下かのどちらかでいい
-
-                                // show && <AddTodoModal show={show} title={genre.name} id={genre.id}/>
-                              }
-                            </>
-                          );
-                        }
-                      )
-                    }
-                     <button onClick={() => openAddTodoModal(genre)}>Click</button>
-                </GenreCard>
-              );
+    ////ページロード時&投稿後、Todoの情報を取得////
+      ////TodoはGenreが親となって保持しているため、Genreを取得すれば問題ない/////
+      useEffect(() => {
+        ////二つのやり方を試した////
+          ////▼上手くいったやり方：asyncを使ってtodoを非同期で常に取得し続けるやり方▼////
+            const getTodo = async () => {
+              const response = await axios.get('http://localhost:3000/api/v1/todos.json');
+              setGenres(response.data)
             }
-          )
-        }
-      </TaskBord>
-      {show &&<AddTodoModal show={show} title={modaltitle} id={modalgenreid} setShow={setShow}/>}
-    </>
-  );
-}
+            getTodo();
+
+          ////▼上手くいかなかったやり方：単純にaxiosで取得するやり方。非同期処理（タスク投稿後、更新無しでタスクを表示）ができなかった////
+            // axios.get('http://localhost:3000/api/v1/todos.json')
+              // .then(resp => {
+              //     console.log(resp.data);
+              //     setGenres(resp.data);
+              // })
+              // .catch(e => {
+              //     console.log(e)
+              // })
+      })
+    ////新規Todo投稿のためにModalを開く際に、開くボタンに応じてモーダルのタイトル（Todoのジャンル名）や、GenreとTodoを紐付けるIDをModalに受け渡すための関数////
+      const openAddTodoModal = (genre) =>{
+        ////モーダルのタイトル（Todoのジャンル名）////
+          setModalTitle(genre.name);
+        ////GenreとTodoを紐付けるID////
+          setModalGenreId(genre.id);
+        ////モーダルを開くステータスをtrueにする////
+        setTodoShow(true);
+      }
+
+    return (
+      <>
+        <h1>
+          All Todo
+        </h1>
+        <TaskBord>
+          {/* stateで定義したgenresをmapで回して、ジャンルごとでカードを表示するようにする */}
+            {
+              genres.map((genre, key) =>
+                {
+                  return(
+                    <GenreCard>
+                      <GenreName>{genre.name}</GenreName>
+                      {/* gereのtodoをmapで回して各ジャンルのカードの中にtodoごとでカードを表示するようにする */}
+                        {
+                          genre.todos.map((todo, num) =>
+                            {
+                              return(
+                                <>
+                                  <TodoCard>
+                                    <TodoAbout>{todo.about}</TodoAbout>
+                                  </TodoCard>
+                                </>
+                              );
+                            }
+                          )
+                        }
+                        <button onClick={() => openAddTodoModal(genre)}>Click</button>
+                    </GenreCard>
+                  );
+                }
+              )
+            }
+        </TaskBord>
+        {/* stateで定義したshowがtrueならば、Modal（AddTodoModalコンポーネント）を表示し、
+        stateで定義したshowとmodaltitleとmodalgenreidを使用して、AddTodoModalコンポーネントに
+        ①モーダルを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
+          {todoshow &&<AddTodoModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow}/>}
+      </>
+    );
+  }
 
 export default TodoList
