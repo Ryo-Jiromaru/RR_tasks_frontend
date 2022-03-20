@@ -55,11 +55,11 @@ import { render } from '@testing-library/react';
 
     ////TodoListでTodoを表示するために、Todoの親となっているGenreを取得する////
       const [genres, setGenres] = useState([])
-    ////Modal（AddTodoModalコンポーネント）を表示するかしないかのステータス////
+    ////AddTodoModalコンポーネントを表示するかしないかのステータス////
       const [todoshow, setTodoShow] = useState(false)
-    ////Modalに受け渡すためにタイトル（ジャンル名）を保存するstate////
+    ////AddTodoModalコンポーネントに受け渡すためにタイトル（ジャンル名）を保存するstate////
       const [modaltitle, setModalTitle] = useState([])
-    ////Modalに受け渡すためにGenreとTodoを紐付けるIDを保存するstate////
+    ////AddTodoModalコンポーネントに受け渡すためにGenreとTodoを紐付けるIDを保存するstate////
       const [modalgenreid, setModalGenreId] = useState([])
 
     ////ページロード時&投稿後、Todoの情報を取得////
@@ -83,13 +83,15 @@ import { render } from '@testing-library/react';
               //     console.log(e)
               // })
       })
-    ////新規Todo投稿のためにModalを開く際に、開くボタンに応じてモーダルのタイトル（Todoのジャンル名）や、GenreとTodoを紐付けるIDをModalに受け渡すための関数////
+    // 新規Todo投稿のためにAddTodoModalコンポーネントを開く際に、
+    // 開くボタンに応じてAddTodoModalコンポーネントのタイトル（Todoのジャンル名）や、
+    // GenreとTodoを紐付けるIDをAddTodoModalコンポーネントに受け渡すための関数
       const openAddTodoModal = (genre) =>{
-        ////モーダルのタイトル（Todoのジャンル名）////
+        ////AddTodoModalコンポーネントのタイトル（Todoのジャンル名）////
           setModalTitle(genre.name);
         ////GenreとTodoを紐付けるID////
           setModalGenreId(genre.id);
-        ////モーダルを開くステータスをtrueにする////
+        ////AddTodoModalコンポーネントを開くステータスをtrueにする////
         setTodoShow(true);
       }
 
@@ -127,9 +129,9 @@ import { render } from '@testing-library/react';
               )
             }
         </TaskBord>
-        {/* stateで定義したshowがtrueならば、Modal（AddTodoModalコンポーネント）を表示し、
+        {/* stateで定義したshowがtrueならば、AddTodoModalコンポーネントを表示し、
         stateで定義したshowとmodaltitleとmodalgenreidを使用して、AddTodoModalコンポーネントに
-        ①モーダルを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
+        ①AddTodoModalコンポーネントを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
           {todoshow &&<AddTodoModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow}/>}
       </>
     );
