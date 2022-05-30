@@ -126,29 +126,25 @@ import { render } from '@testing-library/react';
         <TaskBord>
           {/* stateで定義したgenresをmapで回して、ジャンルごとでカードを表示するようにする */}
             {
-              genres.map((genre, key) =>
+              genres.map((genre) =>
                 {
                   return(
-                    <>
                     <GenreCard key = {genre.id}>
                       <GenreName>{genre.name}</GenreName>
                       {/* gereのtodoをmapで回して各ジャンルのカードの中にtodoごとでカードを表示するようにする */}
                         {
-                          genre.todos.map((todo, num) =>
+                          genre.todos.map((todo) =>
                             {
                               return(
-                                <>
                                   <TodoCard key = {todo.id}>
                                     <TodoAbout>{todo.about}</TodoAbout>
                                   </TodoCard>
-                                </>
                               );
                             }
                           )
                         }
-                        <button onClick={() => openAddTodoModal(genre)}>Click</button>
+                        <button onClick={() => openAddTodoModal(genre)}>追加</button>
                     </GenreCard>
-                    </>
                   );
                 }
               )
