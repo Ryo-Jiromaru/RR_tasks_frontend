@@ -35,7 +35,7 @@ import { render } from '@testing-library/react';
         margin: 0 auto;
     `
 ////AddTodoModaltコンポーネント(①show②title③id④setshowメソッドの4つをTodoListコンポーネントから受け取っている)////
-    function AddTodoModal( {todoshow, title, id, setTodoShow} ){
+    function AddTodoModal( {todoshow, title, id, setTodoShow, effect, setEffect} ){
         ////stateで定義されるtodoの初期値を決める。フォームに入力するためのstateなので初期値が必要////
             const initialTodoState = {
                 id: null,
@@ -68,10 +68,14 @@ import { render } from '@testing-library/react';
                     genre_id: resp.data.genre_id
                 })
                 setTodoShow(false);
+                setEffect(false);
+                console.log("effect1");
+                console.log(effect);
             })
             .catch(e => {
                 console.log(e)
             })
+
         }
 
         
@@ -102,4 +106,4 @@ import { render } from '@testing-library/react';
         )
     }
 
-export default AddTodoModal
+export default AddTodoModal;
