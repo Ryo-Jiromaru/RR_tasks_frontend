@@ -3,7 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import axios from 'axios';
 import styled from 'styled-components';
 import '../App'
-import AddTodoModal from './AddTodoModal';
+import AddModal from './AddModal';
 import { render } from '@testing-library/react';
 
 ////スタイリング////
@@ -55,11 +55,11 @@ import { render } from '@testing-library/react';
 
     ////TodoListでTodoを表示するために、Todoの親となっているGenreを取得する////
       const [genres, setGenres] = useState([])
-    ////AddTodoModalコンポーネントを表示するかしないかのステータス////
+    ////AddModalコンポーネントを表示するかしないかのステータス////
       const [todoshow, setTodoShow] = useState(false)
-    ////AddTodoModalコンポーネントに受け渡すためにタイトル（ジャンル名）を保存するstate////
+    ////AddModalコンポーネントに受け渡すためにタイトル（ジャンル名）を保存するstate////
       const [modaltitle, setModalTitle] = useState([])
-    ////AddTodoModalコンポーネントに受け渡すためにGenreとTodoを紐付けるIDを保存するstate////
+    ////AddModalコンポーネントに受け渡すためにGenreとTodoを紐付けるIDを保存するstate////
       const [modalgenreid, setModalGenreId] = useState([])
     ////useEffectの発火条件管理
       const [effect, setEffect] = useState(false)
@@ -106,15 +106,20 @@ import { render } from '@testing-library/react';
             //       console.log(e)
             //   })
       },[effect])
-    // 新規Todo投稿のためにAddTodoModalコンポーネントを開く際に、
-    // 開くボタンに応じてAddTodoModalコンポーネントのタイトル（Todoのジャンル名）や、
-    // GenreとTodoを紐付けるIDをAddTodoModalコンポーネントに受け渡すための関数
-      const openAddTodoModal = (genre) =>{
-        ////AddTodoModalコンポーネントのタイトル（Todoのジャンル名）////
-          setModalTitle(genre.name);
-        ////GenreとTodoを紐付けるID////
-          setModalGenreId(genre.id);
-        ////AddTodoModalコンポーネントを開くステータスをtrueにする////
+    // 新規Todo投稿のためにAddModalコンポーネントを開く際に、
+    // 開くボタンに応じてAddModalコンポーネントのタイトル（Todoのジャンル名）や、
+    // GenreとTodoを紐付けるIDをAddModalコンポーネントに受け渡すための関数
+      const openAddModal = (genre) =>{
+        if(genre){
+          ////AddModalコンポーネントのタイトル（Todoのジャンル名）////
+            setModalTitle(genre.name);
+          ////GenreとTodoを紐付けるID////
+            setModalGenreId(genre.id);
+          ////AddModalコンポーネントを開くステータスをtrueにする////
+        }else{
+          setModalTitle("新しいジャンル")
+          setModalGenreId(null);
+        }
         setTodoShow(true);
       }
 
@@ -143,17 +148,27 @@ import { render } from '@testing-library/react';
                             }
                           )
                         }
-                        <button onClick={() => openAddTodoModal(genre)}>追加</button>
+                        <button onClick={() => openAddModal(genre)}>追加</button>
                     </GenreCard>
                   );
                 }
               )
             }
+            <GenreCard>
+              {console.log(genres.length)}
+              {
+                genres.length < 5 &&
+                <>
+                  <GenreName>ジャンル追加</GenreName>
+                  <button onClick={() => openAddModal()}>追加</button>
+                </>
+              }
+            </GenreCard>
         </TaskBord>
-        {/* stateで定義したshowがtrueならば、AddTodoModalコンポーネントを表示し、
-        stateで定義したshowとmodaltitleとmodalgenreidを使用して、AddTodoModalコンポーネントに
-        ①AddTodoModalコンポーネントを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
-          {todoshow &&<AddTodoModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow} effect={effect} setEffect={setEffect}/>}
+        {/* stateで定義したshowがtrueならば、AddModalコンポーネントを表示し、
+        stateで定義したshowとmodaltitleとmodalgenreidを使用して、AddModalコンポーネントに
+        ①AddModalコンポーネントを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
+          {todoshow &&<AddModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow} effect={effect} setEffect={setEffect}/>}
       </>
     );
   }
