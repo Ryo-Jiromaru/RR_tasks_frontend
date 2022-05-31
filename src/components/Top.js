@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import '../App'
 
 const About = styled.section`
-    padding: 30px 0 30px 0;
+    padding: 0px 0 30px 0;
 `
 
 const SectionInner = styled.div`
@@ -54,14 +54,14 @@ const TargetDetail = styled.div`
     background-color: #4fff76;
 `
 
-function Top() {
+function Top({loggedInStatus}) {
 
   return (
     <>
         <About>
             <SectionInner>
                 <Title>
-                    About
+                    About（{loggedInStatus}）
                 </Title>
                 <Discription>
                      Taskとはどんなサービス？
