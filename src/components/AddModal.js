@@ -35,7 +35,7 @@ import { render } from '@testing-library/react';
         margin: 0 auto;
     `
 ////AddModaltコンポーネント(①show②title③id④setshowメソッドの4つをTodoListコンポーネントから受け取っている)////
-    function AddModal( {todoshow, title, id, setTodoShow, effect, setEffect} ){
+    function AddModal( {todoshow, title, id, setTodoShow, effect, setEffect, user} ){
         ////stateで定義されるtodoの初期値を決める。フォームに入力するためのstateなので初期値が必要////
             const initialTodoState = {
                 id: null,
@@ -44,7 +44,8 @@ import { render } from '@testing-library/react';
             }
             const initialGenreState = {
                 id:null,
-                name:""
+                name:"",
+                user_id:user.id
             }
         ////todo stateの定義////
             const [todo, setTodo] = useState(initialTodoState)
@@ -89,14 +90,17 @@ import { render } from '@testing-library/react';
         }
 
         const saveGenre = () => {
+            console.log(user);
             var data = {
-                name:genre.name
+                name:genre.name,
+                user_id:user.id
             }
 
             axios.post('http://localhost:3000/api/v1/genres', data)
             .then(resp => {
                 setGenre({
                     name: resp.data.name,
+                    user_id:user.id
                 })
                 setTodoShow(false);
                 setEffect(false);

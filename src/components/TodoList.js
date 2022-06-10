@@ -51,7 +51,7 @@ import { render } from '@testing-library/react';
 
 ////TodoListコンポーネント////
 
-  function TodoList({loggedInStatus}) {
+  function TodoList({loggedInStatus, user}) {
 
     ////TodoListでTodoを表示するために、Todoの親となっているGenreを取得する////
       const [genres, setGenres] = useState([])
@@ -72,9 +72,8 @@ import { render } from '@testing-library/react';
           try{
             const response = await axios.get('http://localhost:3000/api/v1/todos.json');
             setGenres(response.data);
-            console.log("effect3");
+            // console.log("effect3");
             setEffect(true);
-            console.log(KeyframeEffect)
           }catch(error){
             console.log(error);
           }
@@ -122,53 +121,105 @@ import { render } from '@testing-library/react';
         }
         setTodoShow(true);
       }
-
+    console.log(genres)
     return (
       <>
         <h1>
           All Todo
         </h1>
         <TaskBord>
-          {/* stateで定義したgenresをmapで回して、ジャンルごとでカードを表示するようにする */}
-            {
-              genres.map((genre) =>
-                {
-                  return(
-                    <GenreCard key = {genre.id}>
-                      <GenreName>{genre.name}</GenreName>
-                      {/* gereのtodoをmapで回して各ジャンルのカードの中にtodoごとでカードを表示するようにする */}
+            {(() => {
+              if (genres && genres.length<5) {
+                return(
+                  <>
+                   {
+                      genres.map((genre) =>
                         {
-                          genre.todos.map((todo) =>
-                            {
-                              return(
-                                  <TodoCard key = {todo.id}>
-                                    <TodoAbout>{todo.about}</TodoAbout>
-                                  </TodoCard>
-                              );
-                            }
-                          )
+                          console.log("ポイント100");
+                          return(
+                              <GenreCard key = {genre.id}>
+                                <GenreName>{genre.name}</GenreName>
+                                {/* gereのtodoをmapで回して各ジャンルのカードの中にtodoごとでカードを表示するようにする */}
+                                  {
+                                    genre.todos.map((todo) =>
+                                      {
+                                        return(
+                                            <TodoCard key = {todo.id}>
+                                              <TodoAbout>{todo.about}</TodoAbout>
+                                            </TodoCard>
+                                        );
+                                      }
+                                    )
+                                  }
+                                  <button onClick={() => openAddModal(genre)}>追加</button>
+                              </GenreCard>
+                          );
                         }
-                        <button onClick={() => openAddModal(genre)}>追加</button>
+                      )
+                    }
+                    <GenreCard>
+                      <GenreName>ジャンル追加</GenreName>
+                      <button onClick={() => openAddModal()}>追加</button>
                     </GenreCard>
-                  );
-                }
-              )
-            }
-            <GenreCard>
-              {console.log(genres.length)}
-              {
+                  </>
+                )
+              } else if(genres && 5<=genres.length) {
+                return(
+                  <>
+                    {
+                      genres.map((genre) =>
+                      {
+                        return(
+                            <GenreCard key = {genre.id}>
+                              <GenreName>{genre.name}</GenreName>
+                              {/* gereのtodoをmapで回して各ジャンルのカードの中にtodoごとでカードを表示するようにする */}
+                                {
+                                  genre.todos.map((todo) =>
+                                    {
+                                      return(
+                                          <TodoCard key = {todo.id}>
+                                            <TodoAbout>{todo.about}</TodoAbout>
+                                          </TodoCard>
+                                      );
+                                    }
+                                  )
+                                }
+                                <button onClick={() => openAddModal(genre)}>追加</button>
+                            </GenreCard>
+                        );
+                      }
+                      )
+                    }
+                  </>
+                )
+                
+              } else{
+                return(
+                  <>
+                    <GenreCard>
+                      <GenreName>ジャンル追加</GenreName>
+                      <button onClick={() => openAddModal()}>追加</button>
+                    </GenreCard>
+                  </>
+                )
+              }
+            })()}
+          {/* stateで定義したgenresをmapで回して、ジャンルごとでカードを表示するようにする */}
+            {/* <GenreCard> */}
+              {/* {console.log(genres.length)} */}
+              {/* {
                 genres.length < 5 &&
                 <>
                   <GenreName>ジャンル追加</GenreName>
                   <button onClick={() => openAddModal()}>追加</button>
                 </>
-              }
-            </GenreCard>
+              } */}
+            {/* </GenreCard> */}
         </TaskBord>
         {/* stateで定義したshowがtrueならば、AddModalコンポーネントを表示し、
         stateで定義したshowとmodaltitleとmodalgenreidを使用して、AddModalコンポーネントに
         ①AddModalコンポーネントを表示するかのステータス②タイトル（Todoのジャンル名）③GenreとTodoを紐付けるID④setshowメソッドをModalに受け渡す */}
-          {todoshow &&<AddModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow} effect={effect} setEffect={setEffect}/>}
+          {todoshow &&<AddModal todoshow={todoshow} title={modaltitle} id={modalgenreid} setTodoShow={setTodoShow} effect={effect} setEffect={setEffect} user={user}/>}
       </>
     );
   }

@@ -45,7 +45,8 @@ function App() {
       .then(response => {
         if (response.data.logged_in && loggedInStatus === "未ログイン") {
           setLoggedInStatus("ログインなう")
-          setUser(response.data.user)
+          setUser(response.data.user);
+          console.log(response.data);
         } else if (!response.data.logged_in && loggedInStatus === "ログインなう") {
           setLoggedInStatus("未ログイン")
           setUser({})
@@ -91,9 +92,9 @@ function App() {
       <Main>
         <Routes>
           <Route path="/top" element={<Top handleLogin={handleLogin} loggedInStatus={loggedInStatus}/>} />
-          <Route path="/api/v1/todos" element={<TodoList handleLogin={handleLogin} loggedInStatus={loggedInStatus}/>}/>
+          <Route path="/api/v1/todos" element={<TodoList handleLogin={handleLogin} loggedInStatus={loggedInStatus}  user={user}/>}/>
           <Route path = "/signup" element = {<Registration handleLogin={handleLogin} loggedInStatus={loggedInStatus}/>}/>
-          <Route path = "/login" element = {<Login handleLogin={handleLogin} loggedInStatus={loggedInStatus} />}/>
+          <Route path = "/login" element = {<Login handleLogin={handleLogin} loggedInStatus={loggedInStatus}/>}/>
         </Routes>
       </Main>
     </>
